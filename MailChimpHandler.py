@@ -70,11 +70,7 @@ class MailChimpHandler:
         updateCampaign = requests.patch(self.url + '/campaigns/' + newId, json = campaignBody, auth = self.auth).json()
 
         # Send email
-        body = {
-            'test_emails': ['sihaoo93@gmail.com', 'tanandre93@gmail.com'],
-            'send_type': "html"
-        }
-        sendEmail = requests.post(self.url + '/campaigns/' + newId + '/actions/send', auth = self.auth, json = body).json()
+        sendEmail = requests.post(self.url + '/campaigns/' + newId + '/actions/send', auth = self.auth)
         return sendEmail.status_code == '204'
 
 
