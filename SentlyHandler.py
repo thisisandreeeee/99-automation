@@ -35,6 +35,8 @@ class SentlyHandler:
                 message_id = r.json()['response_data']['message_id']
                 self.message_ids.append((item['name'], message_id))
                 print 'SMS sent to %s' % item['name']
+            return item['timestamp']
+        return None
 
     def trainingIsTomorrow(self, timing):
         day, date, time = timing.split(',')
