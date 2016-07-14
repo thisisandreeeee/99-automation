@@ -1,0 +1,6 @@
+gspread==0.3.0
+numpy==1.11.1
+oauth2client==2.2.0
+pandas==0.18.1
+requests-oauthlib==0.6.1
+requests==2.10.0
