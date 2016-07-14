@@ -78,7 +78,16 @@ class GSpreadHandler:
             self.errors.append('Invalid session: ' + str(session))
             return None
 
-    def emailSent(self, item):
-        cell = self.wks.find(item['timestamp'])
-        coord = "Q" + str(cell.row)
-        self.wks.update_acell(coord, 'Sent')
+    def emailSent(self, allTimestamps):
+        for timestamp in allTimestamps:
+            cell = self.wks.find(timestamp)
+            coord = "Q" + str(cell.row) # update column Q
+            self.wks.update_acell(coord, 'Sent')
+        print 'Google sheets updated with sent emails.'
+
+    def smsSent(self, allTimestamps):
+        for timestamp in allTimestamps:
+            cell = self.wks.find(timestamp)
+            coord = "P" + str(cell.row)
+            self.wks.update_acell(coord, 'Sent')
+        print 'Google sheets updated with sent SMS.'
