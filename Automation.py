@@ -49,14 +49,14 @@ class Automation:
 
         msg = "Press [Enter] to send out emails to all newly subscribed users.\nType 'Exit' to quit the program.\n>> "
         self.checkExit(msg)
-        # if mch.sendEmails(allEmails, settings, tracking): # returns true if email sent successfully
-            # gsh.emailSent(allTimestamps)
+        if mch.sendEmails(allEmails, settings, tracking): # returns true if email sent successfully
+            gsh.emailSent(allTimestamps)
         mch.printLogs()
 
         allTimestamps = []
         for item in unsent_sms:
-            slh.sendSms(item)
-            allTimestamps.append(item['timestamp'])
+            timestamp = slh.sendSms(item)
+            allTimestamps.append(timestamp) if timestamp is not None else allTimestamps
         status = slh.checkStatus()
         curr = 0
         while not status:
