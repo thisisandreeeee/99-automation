@@ -71,7 +71,6 @@ class MailChimpHandler:
 
         # Send email
         sendEmail = requests.post(self.url + '/campaigns/' + newId + '/actions/send', auth = self.auth)
-        return sendEmail.status_code == '204'
 
 
     def printLogs(self):
