@@ -53,8 +53,10 @@ class Automation:
             # gsh.emailSent(allTimestamps)
         mch.printLogs()
 
+        allTimestamps = []
         for item in unsent_sms:
             slh.sendSms(item)
+            allTimestamps.append(item['timestamp'])
         status = slh.checkStatus()
         curr = 0
         while not status:
@@ -63,7 +65,9 @@ class Automation:
             curr += 1
             if curr == 10:
                 print "Number of tries exceeded"
-                break
+                sys.exit(0)
+        gsh.smsSent(allTimestamps)
+
 
     def checkExit(self, msg):
         if self.safeMode:

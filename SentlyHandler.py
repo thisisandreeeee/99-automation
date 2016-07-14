@@ -1,7 +1,7 @@
 import requests
 import base64
 from datetime import datetime
-from config import bearertoken, senderMobile
+from config import bearertoken, sendermobile
 
 class SentlyHandler:
     def __init__(self):
