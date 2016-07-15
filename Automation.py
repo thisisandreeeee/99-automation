@@ -88,8 +88,11 @@ class Automation:
 
 if __name__=="__main__":
     app = Automation()
-    schedule.every(3).hours.do(app.run)
+    app.run()
 
-    while True:
-        schedule.run_pending()
-        time.sleep(900)
+    # uncomment below to run automagically
+    # schedule.every().day.at("20:00").do(app.run)
+    #
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(900)
