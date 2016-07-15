@@ -2,6 +2,7 @@ import requests
 import base64
 from datetime import datetime
 from config import bearertoken, sendermobile
+from Logger import log
 
 class SentlyHandler:
     def __init__(self):
@@ -19,6 +20,7 @@ class SentlyHandler:
         mobile = "+65" + item['mobile']
         timing = item['session']['training_date']
         if self.trainingIsTomorrow(timing):
+            log("%s has training tomorrow" % item['name'])
             msg = "Hi " + item['name'].split(' ')[0]
             msg += ", thank you for signing up for 99.co's agents training tomorrow! :)\n"
             msg += "Training details: " + str(timing) + "\n"
@@ -31,11 +33,13 @@ class SentlyHandler:
             }
             urlpath = self.url + '/api/outboundmessage/'
             r = requests.post(urlpath, headers = self.headers, json = body)
+            log("POST request sent (to send SMS) for %s" % item['name'])
             if r.status_code != 200:
+                log("%s's SMS is not confirmed to be sent yet. To check again later" % item['name'])
                 message_id = r.json()['response_data']['message_id']
                 self.message_ids.append((item['name'], message_id))
-                print 'SMS sent to %s' % item['name']
             return item['timestamp']
+        log("%s has no training tomorrow" % item['name'])
         return None
 
     def trainingIsTomorrow(self, timing):
@@ -56,21 +60,3 @@ class SentlyHandler:
                     print "%s status: %s" % (name, status)
         print ''
         return allSent
-
-if __name__ == "__main__":
-    sh = SentlyHandler()
-    sh.sendSms({
-        "name": "Sihao",
-        "cea": "r014196A",
-        "mobile": "97461960",
-        "timestamp": "6/26/2016 22:27:15",
-        "agency": "ERA",
-        "session": {
-            "training_date": "Wednesday, 5 July, 10:00am - 12:00pm",
-            "os": "Samsung/Android phone only"
-        },
-        "email": "rs8188@yahoo.com.sg"
-    })
-    status = sh.checkStatus()
-    while not status:
-        status = sh.checkStatus()

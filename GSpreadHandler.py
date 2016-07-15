@@ -1,5 +1,6 @@
 import gspread, requests, pandas as pd, re, json, time
 from oauth2client.service_account import ServiceAccountCredentials
+from Logger import log
 
 class GSpreadHandler:
     def __init__(self):
@@ -11,7 +12,8 @@ class GSpreadHandler:
         self.start = time.time()
         self.wks = self.gc.open_by_key(self.workbook_id).sheet1
 
-    def updateFromLatest(self, starting_row = 3300):
+    def updateFromLatest(self, starting_row = 3469):
+        log("Starting google sheets search from %s" % starting_row)
         wks = self.wks
 
         list_of_lists = wks.get_all_values()
@@ -22,6 +24,7 @@ class GSpreadHandler:
         for i in df.index:
             timestamp = df['Timestamp'][i]
             if timestamp == '':
+                log("Missing timestamp: row %s of google sheets" % i)
                 break
             is_email_sent, is_sms_sent = df['Confirmation Email'][i], df['SMS'][i]
             if not is_email_sent or not is_sms_sent:
@@ -37,12 +40,13 @@ class GSpreadHandler:
             unsent_sms.append(user) if not is_sms_sent else None
         open("unsent_emails.json",'w').write(json.dumps(unsent_emails, indent=4))
         open("unsent_sms.json",'w').write(json.dumps(unsent_sms, indent=4))
+        log("%s unsent emails, and %s unsent SMS" % (len(unsent_emails), len(unsent_sms)))
 
         if self.errors:
-            print "###### Errors Encountered ######"
             for error in self.errors:
-                print error
-        print "Pulled latest information from google sheets in %.2f seconds" % (time.time() - self.start)
+                log(error)
+
+        log("Time taken to pull information from google sheets: %.2f seconds" % (time.time() - self.start))
 
     def validateMobile(self, mobile):
         mobile = mobile.translate(None, '+ ') # remove + and whitespace
@@ -79,15 +83,16 @@ class GSpreadHandler:
             return None
 
     def emailSent(self, allTimestamps):
+        start = time.time()
         for timestamp in allTimestamps:
             cell = self.wks.find(timestamp)
             coord = "Q" + str(cell.row) # update column Q
             self.wks.update_acell(coord, 'Sent')
-        print 'Google sheets updated with sent emails.'
+            log("Time taken to find %s: %.2f seconds" % (coord, time.time()-start))
 
     def smsSent(self, allTimestamps):
         for timestamp in allTimestamps:
             cell = self.wks.find(timestamp)
             coord = "P" + str(cell.row)
             self.wks.update_acell(coord, 'Sent')
-        print 'Google sheets updated with sent SMS.'
+            log("Time taken to find %s: %.2f seconds" % (coord, time.time()-start))
