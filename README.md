@@ -39,6 +39,13 @@ You are now ready to run the script:
 python Automation.py
 ```
 
+## Display Logs
+The `debug.log` file can be displayed as a table on a basic flask app.
+```
+python frontend.py
+```
+Then, navigate to http://localhost:5000 to view the latest logs.
+
 ## Improvements
 - GSpreadHandler uses the `gspread` python library, which isn't very fast in searching for cell values. This results in a very naive way of updating our spreadsheet when emails / SMS have been sent.
 - To implement a better way of updating the sheets ONLY when an email or SMS has been sent. Current implementation assumes that either all emails (or SMS) are sent, or not at all, instead of tracking individually.
