@@ -49,7 +49,7 @@ class GSpreadHandler:
         log("Time taken to pull information from google sheets: %.2f seconds" % (time.time() - self.start))
 
     def validateMobile(self, mobile):
-        mobile = mobile.translate(None, '+ ') # remove + and whitespace
+        mobile = mobile.translate(None, '+ ()-_') # remove + and whitespace
         try:
             if len(mobile) == 8:
                 firstNum = int(mobile[0])
